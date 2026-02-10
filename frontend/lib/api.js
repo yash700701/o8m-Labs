@@ -12,7 +12,8 @@ export async function fetchHeroSlides() {
 
 export async function fetchBlogs() {
     const res = await fetch(`${API_BASE}/api/blogs`, {
-        next: { revalidate: 60 },
+        // next: { revalidate: 60 },
+        cache: "no-store",
     });
     return res.json();
 }
