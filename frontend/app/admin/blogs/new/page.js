@@ -20,31 +20,40 @@ export default function NewBlogPage() {
     const updateField = (key, value) =>
         setForm((prev) => ({ ...prev, [key]: value }));
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const submitForm = async (event) => {
         event.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         setStatus("");
 
-        const res = await fetch(`${API}/api/blogs`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
+        try {
+            const res = await fetch(`${API}/api/blogs`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            });
 
-        if (!res.ok) {
-            const data = await res.json();
-            setStatus(data.error || "Request failed");
-            return;
+            if (!res.ok) {
+                const data = await res.json();
+                setStatus(data.error || "Request failed");
+                return;
+            }
+
+            setStatus("Blog created.");
+            setForm({
+                title: "",
+                content: "",
+                meta_title: "",
+                meta_description: "",
+                featured_image: "",
+                status: "draft",
+            });
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setStatus("Blog created.");
-        setForm({
-            title: "",
-            content: "",
-            meta_title: "",
-            meta_description: "",
-            featured_image: "",
-            status: "draft",
-        });
     };
 
     return (
@@ -187,9 +196,16 @@ export default function NewBlogPage() {
                         <div className="flex flex-wrap gap-3 border-t border-gray-100 pt-6">
                             <button
                                 type="submit"
-                                className="rounded-full bg-gray-900 px-6 py-2 text-sm font-medium text-white hover:bg-gray-800"
+                                disabled={isSubmitting}
+                                className={`rounded-full px-6 py-2 text-sm font-medium text-white transition
+        ${
+            isSubmitting
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gray-900 hover:bg-gray-800"
+        }
+    `}
                             >
-                                Create Blog
+                                {isSubmitting ? "Creating…" : "Create Blog"}
                             </button>
 
                             <a

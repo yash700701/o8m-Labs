@@ -47,8 +47,13 @@ export default function HeroAdmin() {
         setEditingId(null);
     };
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const submitForm = async (event) => {
         event.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
         setStatus("");
 
         const method = editingId ? "PUT" : "POST";
@@ -56,20 +61,24 @@ export default function HeroAdmin() {
             ? `${API}/api/hero/${editingId}`
             : `${API}/api/hero`;
 
-        const res = await fetch(endpoint, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form),
-        });
+        try {
+            const res = await fetch(endpoint, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+            });
 
-        if (!res.ok) {
-            const data = await res.json();
-            setStatus(data.error || "Request failed");
-            return;
+            if (!res.ok) {
+                const data = await res.json();
+                setStatus(data.error || "Request failed");
+                return;
+            }
+
+            resetForm();
+            loadSlides();
+        } finally {
+            setIsSubmitting(false);
         }
-
-        resetForm();
-        loadSlides();
     };
 
     const handleEdit = (slide) => {
@@ -255,16 +264,36 @@ export default function HeroAdmin() {
                         <div className="flex gap-3">
                             <button
                                 type="submit"
-                                className="rounded-full bg-gray-900 px-6 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                                disabled={isSubmitting}
+                                className={`rounded-full px-6 py-2 text-sm font-medium text-white transition
+        ${
+            isSubmitting
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gray-900 hover:bg-gray-800"
+        }
+    `}
                             >
-                                {editingId ? "Update Slide" : "Create Slide"}
+                                {isSubmitting
+                                    ? editingId
+                                        ? "Updating…"
+                                        : "Creating…"
+                                    : editingId
+                                      ? "Update Slide"
+                                      : "Create Slide"}
                             </button>
 
                             {editingId && (
                                 <button
                                     type="button"
+                                    disabled={isSubmitting}
                                     onClick={resetForm}
-                                    className="rounded-full border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                                    className={`rounded-full border px-6 py-2 text-sm font-medium transition
+            ${
+                isSubmitting
+                    ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+            }
+        `}
                                 >
                                     Cancel
                                 </button>

@@ -131,7 +131,7 @@ export default async function HomePage() {
       {/* CTA */}
       <section
         id="contact"
-        className="mx-auto max-w-7xl py-24"
+        className="mx-auto max-w-7xl pt-24"
       >
         <div className="flex flex-col items-start justify-between gap-8 rounded-3xl bg-gray-900 p-12 text-white md:flex-row md:items-center">
           <div>

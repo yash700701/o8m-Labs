@@ -44,9 +44,9 @@ export default function HeroSlider({ slides }) {
                 <div className="hero__scrim" />
             </div>
 
-            <div className="hero__content">
+            <div className="hero__content flex flex-col items-start justify-baseline">
                 <p className="hero__eyebrow">Giakaa-inspired intelligence</p>
-                <h1>{slide.title}</h1>
+                <h1 >{slide.title}</h1>
                 <p className="hero__sub mb-2">{slide.description}</p>
                 {slide.cta_text && (
                     <a className="bg-white text-zinc-600 px-5 rounded-full " href={slide.cta_link}>
