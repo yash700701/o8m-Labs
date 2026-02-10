@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, "..", ".env") });
 
 import app from "./app.js";
 
-const PORT = 8000;
+const PORT = 8080;
 
 app.listen(PORT, () => {
     console.log(`Backend running on port ${PORT}`);
